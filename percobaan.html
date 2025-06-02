@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Game Tangkap Emoji - Azzahra Al Rizky</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Comic Sans MS', cursive;
+      background-color: #fefbd8;
+      overflow: hidden;
+    }
+
+    header {
+      background-color: #ffb6c1;
+      padding: 15px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      color: #ff1493;
+    }
+
+    #gameArea {
+      position: relative;
+      height: 90vh;
+      overflow: hidden;
+    }
+
+    .emoji {
+      position: absolute;
+      font-size: 2em;
+      cursor: pointer;
+      animation: fall linear;
+    }
+
+    @keyframes fall {
+      0% { top: -50px; }
+      100% { top: 100%; }
+    }
+
+    #scoreBoard {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: #fffacd;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 1.2em;
+    }
+
+    #endMessage {
+      position: fixed;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff0f5;
+      padding: 30px;
+      border-radius: 15px;
+      border: 3px dashed #ff69b4;
+      display: none;
+      text-align: center;
+    }
+
+    .footer {
+      background-color: #ffe4e1;
+      padding: 10px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🎈 Tangkap Emoji - Azzahra Al Rizky 🎈</h1>
+  </header>
+
+  <div id="scoreBoard">Skor: <span id="score">0</span> | Waktu: <span id="timer">120</span>s</div>
+  <div id="gameArea"></div>
+
+  <div id="endMessage">
+    <h2>⏰ Waktu Habis!</h2>
+    <p>Skor akhir kamu: <span id="finalScore">0</span></p>
+    <p id="comment"></p>
+  </div>
+
+  <div class="footer">
+    <p>© 2025 Azzahra Al Rizky | Game tangkap emoji bikin ketagihan 😍</p>
+  </div>
+
+  <script>
+    const gameArea = document.getElementById('gameArea');
+    const scoreDisplay = document.getElementById('score');
+    const timerDisplay = document.getElementById('timer');
+    const endMessage = document.getElementById('endMessage');
+    const finalScore = document.getElementById('finalScore');
+    const comment = document.getElementById('comment');
+
+    let score = 0;
+    let timeLeft = 120; // 2 minutes
+    let gameInterval;
+
+    function startGame() {
+      gameInterval = setInterval(spawnEmoji, 800);
+      const timerInterval = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = timeLeft;
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          clearInterval(gameInterval);
+          endGame();
+        }
+      }, 1000);
+    }
+
+    function spawnEmoji() {
+      const emojiList = ['😂','😆','😍','🤪','😜','😹','😻','💩','🧠','👻','🥳'];
+      const emoji = document.createElement('div');
+      emoji.classList.add('emoji');
+      emoji.textContent = emojiList[Math.floor(Math.random() * emojiList.length)];
+
+      const left = Math.random() * (window.innerWidth - 40);
+      const duration = Math.random() * 2 + 2; // 2–4 seconds
+      emoji.style.left = `${left}px`;
+      emoji.style.animationDuration = `${duration}s`;
+
+      emoji.addEventListener('click', () => {
+        score++;
+        scoreDisplay.textContent = score;
+        emoji.remove();
+      });
+
+      emoji.addEventListener('animationend', () => emoji.remove());
+
+      gameArea.appendChild(emoji);
+    }
+
+    function endGame() {
+      document.querySelectorAll('.emoji').forEach(e => e.remove());
+      finalScore.textContent = score;
+
+      // Pesan berdasarkan skor
+      if (score < 20) {
+        comment.textContent = "🤭 Baru pemanasan ya?";
+      } else if (score < 50) {
+        comment.textContent = "👏 Lumayan! Jari kamu mulai panas!";
+      } else if (score < 80) {
+        comment.textContent = "🔥 Hebat! Kamu lincah banget!";
+      } else {
+        comment.textContent = "🚀 WAOW! Kamu Emoji Catcher Pro!";
+      }
+
+      endMessage.style.display = 'block';
+    }
+
+    startGame();
+  </script>
+
+</body>
+</html>
+
